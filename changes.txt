@@ -1,3 +1,10 @@
+jboot v4.1.7 2024-04-28:
+修复：反向代理出现Cookies丢失问题
+优化：大量依赖升级与修改
+优化：删除cglib相关代码与测试，避免高版本Java出现错误
+优化：升级JFinal版本，现在可以在21以上的Java上运行了
+
+
 jboot v4.1.5 2023-09-08:
 优化：MockProxy 由 Java Proxy 替换 cblib
 优化：增加 Hikari 连接池配置参数 keepaliveTime 配置功能，感谢 @赵锋
