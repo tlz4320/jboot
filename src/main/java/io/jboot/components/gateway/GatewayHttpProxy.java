@@ -92,8 +92,6 @@ public class GatewayHttpProxy {
              * 配置 HttpURLConnection 的 http 请求头
              */
             configConnection(conn, req);
-
-            LOG.error("tobin: " + req.getMethod());
             // get 请求
             if ("get".equalsIgnoreCase(req.getMethod())) {
                 conn.connect();
