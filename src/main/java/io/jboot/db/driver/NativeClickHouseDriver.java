@@ -17,7 +17,7 @@ package io.jboot.db.driver;
 
 import com.github.housepower.jdbc.ClickHouseConnection;
 import com.github.housepower.jdbc.ClickHouseDriver;
-import com.github.housepower.jdbc.settings.ClickHouseConfig;
+import com.github.housepower.settings.ClickHouseConfig;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

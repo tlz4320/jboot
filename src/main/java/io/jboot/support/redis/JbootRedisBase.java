@@ -21,10 +21,7 @@ import io.jboot.components.serializer.JbootSerializer;
 import io.jboot.components.serializer.JbootSerializerManager;
 import io.jboot.utils.StrUtil;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 参考： com.jfinal.plugin.redis
@@ -111,7 +108,7 @@ public abstract class JbootRedisBase implements JbootRedis {
     @Override
     @SuppressWarnings("rawtypes")
     public List valueListFromBytesList(Collection<byte[]> data) {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new LinkedList<>();//改成LinkedList 保持顺序
         for (byte[] d : data) {
             Object object = null;
             try {

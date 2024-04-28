@@ -19,6 +19,7 @@ import io.jboot.app.config.annotation.ConfigModel;
 import io.jboot.utils.StrUtil;
 import redis.clients.jedis.HostAndPort;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -229,12 +230,16 @@ public class JbootRedisConfig {
         String[] hostAndPortStrings = host.split(",");
         for (String hostAndPortString : hostAndPortStrings) {
             if (StrUtil.isBlank(hostAndPortString)) continue;
-            String[] hostAndPorts = hostAndPortString.split(":");
-
-            String host = hostAndPorts[0];
-            int port = hostAndPorts.length > 1 ? Integer.parseInt(hostAndPorts[1]) : getPort();
-
-            hostAndPortSet.add(new HostAndPort(host, port));
+            int port = getPort();
+            URI uri;
+            if(hostAndPortString.startsWith("http")){
+                uri = URI.create(hostAndPortString);
+            }else{
+                uri = URI.create("http://" + hostAndPortString);
+            }
+            if(uri.getPort() != -1)
+                port = uri.getPort();
+            hostAndPortSet.add(new HostAndPort(uri.getHost(), port));
         }
         return hostAndPortSet;
     }

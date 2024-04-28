@@ -17,9 +17,14 @@ package io.jboot.components.valid;
 
 import com.jfinal.kit.Ret;
 import io.jboot.components.valid.interceptor.SimpleContext;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.HibernateValidatorFactory;
 
-import javax.validation.*;
+
 import java.util.Set;
 
 public class ValidUtil {
@@ -27,19 +32,19 @@ public class ValidUtil {
     /**
      * ValidatorFactory
      */
-    private static ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
-            .configure()
-            .failFast(true)
-            .buildValidatorFactory();
+    private static HibernateValidatorFactory hibernateValidatorFactory = Validation.byDefaultProvider()
+        .configure()
+        .buildValidatorFactory()
+        .unwrap( HibernateValidatorFactory.class );
     /**
      * 验证器：用于数据验证
      */
-    private static Validator validator = validatorFactory.getValidator();
+    private static Validator validator = hibernateValidatorFactory.getValidator();
 
     /**
      * 消息处理器: 用于校验消息处理
      */
-    private static MessageInterpolator messageInterpolator = validatorFactory.getMessageInterpolator();
+    private static MessageInterpolator messageInterpolator = hibernateValidatorFactory.getMessageInterpolator();
 
     private static int errorCode = 400;
 

@@ -16,13 +16,12 @@
 package io.jboot.db.driver;
 
 import com.github.housepower.jdbc.ClickHouseConnection;
-import com.github.housepower.jdbc.connect.NativeClient;
-import com.github.housepower.jdbc.connect.NativeContext;
-import com.github.housepower.jdbc.misc.Validate;
-import com.github.housepower.jdbc.protocol.HelloResponse;
-import com.github.housepower.jdbc.protocol.QueryRequest;
-import com.github.housepower.jdbc.settings.ClickHouseConfig;
-import com.github.housepower.jdbc.settings.ClickHouseDefines;
+import com.github.housepower.client.NativeClient;
+import com.github.housepower.client.NativeContext;
+import com.github.housepower.misc.Validate;
+import com.github.housepower.protocol.HelloResponse;
+import com.github.housepower.settings.ClickHouseDefines;
+import com.github.housepower.settings.ClickHouseConfig;
 
 import java.net.InetSocketAddress;
 import java.sql.PreparedStatement;
@@ -54,12 +53,12 @@ public class NativeClickHouseConnection extends ClickHouseConnection {
         return new NativeContext(clientContext(nativeClient, configure), serverContext(nativeClient, configure), nativeClient);
     }
 
-    private static QueryRequest.ClientContext clientContext(NativeClient nativeClient, ClickHouseConfig configure) throws SQLException {
+    private static NativeContext.ClientContext clientContext(NativeClient nativeClient, ClickHouseConfig configure) throws SQLException {
         Validate.isTrue(nativeClient.address() instanceof InetSocketAddress);
         InetSocketAddress address = (InetSocketAddress) nativeClient.address();
         String clientName = String.format(Locale.ROOT, "%s %s", ClickHouseDefines.NAME, "client");
         String initialAddress = "[::ffff:127.0.0.1]:0";
-        return new QueryRequest.ClientContext(initialAddress, address.getHostName(), clientName);
+        return new NativeContext.ClientContext(initialAddress, address.getHostName(), clientName);
     }
 
     private static NativeContext.ServerContext serverContext(NativeClient nativeClient, ClickHouseConfig configure) throws SQLException {

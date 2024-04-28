@@ -18,42 +18,37 @@ package io.jboot.components.serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.pool.KryoFactory;
-import com.esotericsoftware.kryo.pool.KryoPool;
+import com.esotericsoftware.kryo.util.Pool;
 
 import java.io.ByteArrayOutputStream;
 
 /**
  * @author Michael Yang 杨福海 （fuhai999@gmail.com）
- * @version V1.0
+ * @modified by xiangbin
+ * @version V1.1
  * @Title: Kryo 序列化
  * @Description: 性能和 fst一样
  */
 public class KryoSerializer implements JbootSerializer {
 
-
-    private KryoFactory kryoFactory = () -> new Kryo();
-
-    private KryoPool kryoPool = new KryoPool.Builder(kryoFactory).
-            softReferences()
-            .build();
+    private final Pool<Kryo> kryoPool = new Pool<Kryo>(true, false, 8){
+        @Override
+        protected Kryo create() {
+            return new Kryo();
+        }
+    };
 
     @Override
     public byte[] serialize(Object obj) {
         if (obj == null) {
             return null;
         }
-        Output output = null;
-        Kryo kryo = kryoPool.borrow();
-        try {
-            output = new Output(new ByteArrayOutputStream());
+        Kryo kryo = kryoPool.obtain();
+        try (Output output = new Output(new ByteArrayOutputStream())) {
             kryo.writeClassAndObject(output, obj);
             return output.toBytes();
         } finally {
-            if (output != null) {
-                output.close();
-            }
-            kryoPool.release(kryo);
+            kryoPool.free(kryo);
         }
     }
 
@@ -62,16 +57,11 @@ public class KryoSerializer implements JbootSerializer {
         if (bytes == null || bytes.length == 0) {
             return null;
         }
-        ByteBufferInput input = null;
-        Kryo kryo = kryoPool.borrow();
-        try {
-            input = new ByteBufferInput(bytes);
+        Kryo kryo = kryoPool.obtain();
+        try (ByteBufferInput input = new ByteBufferInput(bytes)) {
             return kryo.readClassAndObject(input);
         } finally {
-            if (input != null) {
-                input.close();
-            }
-            kryoPool.release(kryo);
+            kryoPool.free(kryo);
         }
     }
 }

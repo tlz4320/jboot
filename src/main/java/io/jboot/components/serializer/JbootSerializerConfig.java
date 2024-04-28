@@ -38,7 +38,7 @@ public class JbootSerializerConfig {
     }
 
     private String initType() {
-        return JdkUtil.isJdk11To19() ? FASTJSON : FST;
+        return JdkUtil.isJdk11Later() ? FASTJSON : FST;
     }
 
 

@@ -19,9 +19,9 @@ import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import io.jboot.components.valid.ValidUtil;
 import io.jboot.utils.ClassUtil;
+import jakarta.validation.ConstraintViolation;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.lang.reflect.Parameter;
 import java.util.Set;
 

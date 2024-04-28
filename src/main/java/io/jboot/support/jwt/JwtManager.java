@@ -87,15 +87,15 @@ public class JwtManager {
     public Map parseJwtToken(String token) {
         SecretKey secretKey = createSecretKey();
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token).getBody();
+            Claims claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+
+            //Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
 
             String jsonString = claims.getSubject();
             if (StrUtil.isNotBlank(jsonString)) {
                 return JsonKit.parse(jsonString, HashMap.class);
             }
-        } catch (SignatureException | MalformedJwtException ex) {
+        } catch (MalformedJwtException ex) {
             // don't trust the JWT!
             // jwt 签名错误或解析错误，可能是伪造的，不能相信
             LOG.error("Do not trast the jwt. " + ex.getMessage());
@@ -119,7 +119,6 @@ public class JwtManager {
 
         SecretKey secretKey = createSecretKey();
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
 
@@ -128,13 +127,13 @@ public class JwtManager {
         String subject = JsonKit.toJson(map);
 
         JwtBuilder builder = Jwts.builder()
-                .setIssuedAt(now)
-                .setSubject(subject)
-                .signWith(signatureAlgorithm, secretKey);
+                .issuedAt(now)
+                .subject(subject)
+                .signWith(secretKey);
 
         if (config.getValidityPeriod() > 0) {
             long expMillis = nowMillis + config.getValidityPeriod();
-            builder.setExpiration(new Date(expMillis));
+            builder.expiration(new Date(expMillis));
         }
 
         return builder.compact();

@@ -6,7 +6,7 @@
 
     <groupId>io.jboot</groupId>
     <artifactId>jboot</artifactId>
-    <version>4.1.5</version>
+    <version>4.1.7</version>
     <packaging>jar</packaging>
 
     <name>jboot</name>
@@ -41,42 +41,43 @@
 
 
     <properties>
-        <jfinal.version>5.1.2</jfinal.version>
+        <jfinal.version>5.1.7</jfinal.version>
         <jfinal-cos.version>2022.2</jfinal-cos.version>
         <jfinal-undertow.version>3.5</jfinal-undertow.version>
         <jfinal-weixin.version>3.4</jfinal-weixin.version>
-        <cglib.version>3.3.0</cglib.version>
-        <HikariCP.version>4.0.3</HikariCP.version>
-        <jackson.version>2.15.2</jackson.version>
-        <mysql.version>5.1.49</mysql.version>
-        <undertow.version>2.2.19.Final</undertow.version>
-        <slf4j.version>1.7.36</slf4j.version>
-<!--        <fst.version>3.0.3</fst.version>-->
-        <fst.version>2.57</fst.version>
-        <fastjson.version>1.2.83</fastjson.version>
-<!--        <fastjson.version>2.0.12</fastjson.version>-->
-        <guava.version>32.1.2-jre</guava.version>
+        <HikariCP.version>5.1.0</HikariCP.version>
+        <jackson.version>2.17.0</jackson.version>
+        <mysql.version>8.3.0</mysql.version>
+        <undertow.version>2.2.24.Final</undertow.version>
+        <slf4j.version>2.0.12</slf4j.version>
+        <fastjson.version>2.17.0</fastjson.version>
+        <guava.version>33.1.0-jre</guava.version>
         <cron4j.version>2.2.5</cron4j.version>
-        <jedis.version>3.8.0</jedis.version>
-        <jsoup.version>1.16.1</jsoup.version>
+        <jedis.version>5.1.2</jedis.version>
+        <jsoup.version>1.17.2</jsoup.version>
         <ehcache.version>2.10.9.2</ehcache.version>
-        <caffeine.version>2.9.3</caffeine.version>
-        <commons-lang3.version>3.13.0</commons-lang3.version>
-        <commons-io.version>2.13.0</commons-io.version>
-        <commons-codec.version>1.15</commons-codec.version>
-        <httpclient.version>4.5.12</httpclient.version>
-        <httpcore.version>4.4.13</httpcore.version>
-        <netty.version>4.1.52.Final</netty.version>
-        <sentinel.version>1.8.3</sentinel.version>
-        <dubbo.version>2.7.23</dubbo.version>
-        <resteasy.version>3.14.0.Final</resteasy.version>
-        <seata.version>1.5.1</seata.version>
-        <motan.version>1.1.8</motan.version>
-        <metrics.version>4.2.18</metrics.version>
-
-        <jdk.version>1.8</jdk.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <caffeine.version>3.1.8</caffeine.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <commons-io.version>2.15.1</commons-io.version>
+        <commons-codec.version>1.16.1</commons-codec.version>
+        <httpclient.version>4.5.14</httpclient.version>
+        <httpcore.version>4.4.16</httpcore.version>
+        <netty.version>4.1.107.Final</netty.version>
+        <sentinel.version>1.8.7</sentinel.version>
+        <dubbo.version>3.2.11</dubbo.version>
+        <resteasy.version>6.2.7.Final</resteasy.version>
+        <resteasy_other.version>3.15.6.Final</resteasy_other.version>
+        <seata.version>2.0.0</seata.version>
+        <motan.version>1.2.2</motan.version>
+        <metrics.version>4.2.25</metrics.version>
+        <javassist.version>3.30.2-GA</javassist.version>
+        <junit.version>5.10.2</junit.version>
+        <shiro.version>2.0.0</shiro.version>
+        <jjwt.version>0.12.5</jjwt.version>
+        <hibernate.version>8.0.1.Final</hibernate.version>
+        <jdk.version>21</jdk.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     </properties>
@@ -123,18 +124,10 @@
         </dependency>
 
         <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>${cglib.version}</version>
-        </dependency>
-
-
-        <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-websockets-jsr</artifactId>
             <version>${undertow.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -168,9 +161,10 @@
         </dependency>
 
 
+        <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
         </dependency>
 
@@ -178,7 +172,7 @@
         <dependency>
             <groupId>com.github.housepower</groupId>
             <artifactId>clickhouse-native-jdbc-shaded</artifactId>
-            <version>2.5.6</version>
+            <version>2.7.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -186,22 +180,14 @@
         <dependency>
             <groupId>ru.yandex.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.2</version>
             <scope>provided</scope>
         </dependency>
-
-
-        <dependency>
-            <groupId>de.ruedigermoeller</groupId>
-            <artifactId>fst</artifactId>
-            <version>${fst.version}</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.29.2-GA</version>
+            <version>${javassist.version}</version>
         </dependency>
 
 
@@ -218,11 +204,6 @@
         <!--            <version>${slf4j.version}</version>-->
         <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -278,7 +259,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.2.8</version>
+            <version>1.2.22</version>
             <scope>provided</scope>
         </dependency>
 
@@ -294,7 +275,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.7.2</version>
+            <version>${junit.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -362,19 +343,10 @@
             </exclusions>
         </dependency>
 
-
-<!--                <dependency>-->
-<!--                    <groupId>com.alibaba.csp</groupId>-->
-<!--                    <artifactId>ahas-sentinel-client</artifactId>-->
-<!--                    <version>1.8.3</version>-->
-<!--                    <scope>provided</scope>-->
-<!--                </dependency>-->
-
-
         <dependency>
             <groupId>com.ctrip.framework.apollo</groupId>
             <artifactId>apollo-client</artifactId>
-            <version>1.8.0</version>
+            <version>2.2.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -382,7 +354,7 @@
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-client</artifactId>
-            <version>2.0.4</version>
+            <version>2.3.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -402,7 +374,7 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.0.21.Final</version>
+            <version>${hibernate.version}</version>
         </dependency>
 
         <dependency>
@@ -483,28 +455,28 @@
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
-            <version>5.3.0.RELEASE</version>
+            <version>6.3.2.RELEASE</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
-            <version>4.0.2</version>
+            <version>5.6.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.aliyun.openservices</groupId>
             <artifactId>ons-client</artifactId>
-            <version>1.8.8.Final</version>
+            <version>2.0.6.Final</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
-            <version>5.9.0</version>
+            <version>5.20.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -512,14 +484,14 @@
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-client</artifactId>
-            <version>4.8.0</version>
+            <version>5.2.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>shardingsphere-jdbc-core</artifactId>
-            <version>5.3.1</version>
+            <version>5.4.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -569,14 +541,14 @@
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_dropwizard</artifactId>
-            <version>0.12.0</version>
+            <version>0.16.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_httpserver</artifactId>
-            <version>0.12.0</version>
+            <version>0.16.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -584,14 +556,14 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
-            <version>1.9.1</version>
+            <version>${shiro.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
-            <version>1.9.1</version>
+            <version>${shiro.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -631,7 +603,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
-            <version>${resteasy.version}</version>
+            <version>${resteasy_other.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -652,22 +624,15 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson-provider</artifactId>
-            <version>${resteasy.version}</version>
+            <version>${resteasy_other.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- 用于支持 dubbo 的 restful 注解 end -->
 
         <dependency>
-            <groupId>com.101tec</groupId>
-            <artifactId>zkclient</artifactId>
-            <version>0.11</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <version>${jjwt.version}</version>
         </dependency>
 
         <dependency>
@@ -721,7 +686,7 @@
         <dependency>
             <groupId>net.oschina.j2cache</groupId>
             <artifactId>j2cache-core</artifactId>
-            <version>2.8.4-release</version>
+            <version>2.8.5-release</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -734,7 +699,7 @@
         <dependency>
             <groupId>org.apache.qpid</groupId>
             <artifactId>qpid-client</artifactId>
-            <version>6.3.4</version>
+            <version>6.4.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -773,7 +738,7 @@
 
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
+                <artifactId>slf4j-reload4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
 
@@ -808,11 +773,13 @@
                 <version>${guava.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
+            <!--<dependency>-->
+            <!--    <groupId>com.alibaba.fastjson2</groupId>-->
+            <!--    <artifactId>fastjson2</artifactId>-->
+            <!--    <version>${fastjson.version}</version>-->
+            <!--</dependency>-->
+
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -897,7 +864,17 @@
                     <compilerArgument>-parameters</compilerArgument>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <user.language>en</user.language>
+                        <user.region>US</user.region>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -915,7 +892,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -929,7 +906,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
+                        <version>3.6.3</version>
                         <configuration>
                             <windowtitle>Jboot</windowtitle>
                             <doctitle>Jboot</doctitle>
@@ -937,9 +914,8 @@
                             <detectLinks>false</detectLinks>
                             <detectOfflineLinks>true</detectOfflineLinks>
                             <linksource>true</linksource>
-                            <additionalparam>-Xdoclint:none</additionalparam>
                             <detectJavaApiLink>true</detectJavaApiLink>
-                            <source>8</source>
+                            <source>21</source>
                         </configuration>
                         <executions>
                             <execution>
@@ -954,7 +930,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>3.2.2</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>

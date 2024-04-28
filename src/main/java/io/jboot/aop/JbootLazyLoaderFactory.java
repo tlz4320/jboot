@@ -15,9 +15,7 @@
  */
 package io.jboot.aop;
 
-import io.jboot.aop.cglib.JbootCglibLazyLoader;
 import io.jboot.app.JbootApplicationConfig;
-import net.sf.cglib.proxy.Enhancer;
 
 public class JbootLazyLoaderFactory {
 
@@ -28,11 +26,8 @@ public class JbootLazyLoaderFactory {
     }
 
     public JbootLazyLoader getLoader() {
-        if ("javassist".equalsIgnoreCase(JbootApplicationConfig.get().getProxy())) {
-            //javassist 直接返回 createFieldObjectNormal 的内容，而非 lazy Object
-            return (targetObject, field) -> JbootAopFactory.me().createFieldObjectNormal(targetObject, field);
-        } else {
-            return (targetObject, field) -> Enhancer.create(field.getType(), new JbootCglibLazyLoader(targetObject, field));
-        }
+        //直接移除cglib支持，避免高版本jdk不支持
+        //javassist 直接返回 createFieldObjectNormal 的内容，而非 lazy Object
+         return (targetObject, field) -> JbootAopFactory.me().createFieldObjectNormal(targetObject, field);
     }
 }

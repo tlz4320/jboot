@@ -92,9 +92,6 @@ public class SeataGlobalTransactionHandler {
 			case RollbackFailure:
 				failureHandler.onRollbackFailure(e.getTransaction(), e.getCause());
 				throw e.getCause(); 
-			case RollbackRetrying:
-				failureHandler.onRollbackRetrying(e.getTransaction(), e.getOriginalException());
-				throw e.getCause();
 			default:
 				throw new ShouldNeverHappenException("Unknown TransactionalExecutor.Code: " + code);
 

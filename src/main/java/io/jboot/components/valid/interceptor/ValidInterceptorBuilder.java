@@ -20,8 +20,8 @@ import io.jboot.aop.Interceptors;
 import io.jboot.aop.annotation.AutoLoad;
 import io.jboot.core.weight.Weight;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 

@@ -19,6 +19,7 @@ import com.jfinal.aop.Aop;
 import com.jfinal.aop.AopManager;
 import com.jfinal.config.*;
 import com.jfinal.core.Controller;
+import com.jfinal.core.JFinal;
 import com.jfinal.core.Path;
 import com.jfinal.core.converter.TypeConverter;
 import com.jfinal.kit.PathKit;
@@ -335,16 +336,19 @@ public class JbootCoreConfig extends JFinalConfig {
 
     @Override
     public void configHandler(Handlers handlers) {
-
-        //先添加用户的handler，再添加jboot自己的handler
-        //用户的 handler 优先于 jboot 的 handler 执行
-        JbootAppListenerManager.me().onHandlerConfig(new JfinalHandlers(handlers));
-
+        //这里我做了调整，这个Gateway的Handler应该是最优先的才合理
+        //因为第一时间应该做Gateway的跳转，否则在用户的Handler会造成各种错误
         //一般的项目没必要添加门户网关的 Gateway
         //在某些情况下，必须要添加的，可以自行添加
         if (JbootGatewayManager.me().isConfigOk()) {
             handlers.add(new JbootGatewayHandler());
         }
+
+        //先添加用户的handler，再添加jboot自己的handler
+        //用户的 handler 优先于 jboot 的 handler 执行
+        JbootAppListenerManager.me().onHandlerConfig(new JfinalHandlers(handlers));
+
+
 
         handlers.add(new AttachmentHandler());
 

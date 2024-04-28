@@ -17,6 +17,7 @@ package io.jboot.db.dbpro;
 
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.*;
+import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.dialect.Dialect;
 import io.jboot.db.SqlDebugger;
 import io.jboot.db.dialect.JbootDialect;

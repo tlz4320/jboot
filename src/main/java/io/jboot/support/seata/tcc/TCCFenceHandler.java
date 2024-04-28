@@ -14,12 +14,12 @@ import io.jboot.db.datasource.DataSourceConfigManager;
 import io.jboot.utils.StrUtil;
 import io.seata.common.exception.FrameworkErrorCode;
 import io.seata.common.thread.NamedThreadFactory;
-import io.seata.rm.tcc.TwoPhaseResult;
-import io.seata.rm.tcc.constant.TCCFenceConstant;
-import io.seata.rm.tcc.exception.TCCFenceException;
-import io.seata.rm.tcc.store.TCCFenceDO;
-import io.seata.rm.tcc.store.TCCFenceStore;
-import io.seata.rm.tcc.store.db.TCCFenceStoreDataBaseDAO;
+import io.seata.integration.tx.api.fence.constant.CommonFenceConstant;
+import io.seata.integration.tx.api.fence.exception.CommonFenceException;
+import io.seata.integration.tx.api.fence.store.CommonFenceDO;
+import io.seata.integration.tx.api.fence.store.CommonFenceStore;
+import io.seata.integration.tx.api.fence.store.db.CommonFenceStoreDataBaseDAO;
+import io.seata.integration.tx.api.remoting.TwoPhaseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,10 +41,9 @@ public class TCCFenceHandler {
     private TCCFenceHandler() {
         throw new IllegalStateException("Utility class");
     }
+    private static final Logger LOGGER = LoggerFactory.getLogger(TCCFenceHandler.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(io.seata.rm.tcc.TCCFenceHandler.class);
-
-    private static final TCCFenceStore TCC_FENCE_DAO = TCCFenceStoreDataBaseDAO.getInstance();
+    private static final CommonFenceStore TCC_FENCE_DAO = CommonFenceStoreDataBaseDAO.getInstance();
 
     private static DataSource dataSource;
 
@@ -80,10 +79,10 @@ public class TCCFenceHandler {
         DataSource dataSource = new DataSourceBuilder(dataSourceConfig).build();
         IAtom runnable = () -> {
             Connection connection = dataSource.getConnection();
-            boolean result = insertTCCFenceLog(connection, xid, branchId, actionName, TCCFenceConstant.STATUS_TRIED);
+            boolean result = insertTCCFenceLog(connection, xid, branchId, actionName, CommonFenceConstant.STATUS_TRIED);
             LOGGER.info("TCC fence prepare result: {}. xid: {}, branchId: {}", result, xid, branchId);
             if (!result) {
-                throw new TCCFenceException(String.format("Insert tcc fence record error, prepare fence failed. xid= %s, branchId= %s", xid, branchId),
+                throw new CommonFenceException(String.format("Insert tcc fence record error, prepare fence failed. xid= %s, branchId= %s", xid, branchId),
                         FrameworkErrorCode.InsertRecordError);
             }
             return result;
@@ -109,25 +108,25 @@ public class TCCFenceHandler {
         DataSource dataSource = new DataSourceBuilder(dataSourceConfig).build();
         IAtom runnable = () -> {
             Connection connection = dataSource.getConnection();
-            TCCFenceDO tccFenceDO = TCC_FENCE_DAO.queryTCCFenceDO(connection, xid, branchId);
+            CommonFenceDO tccFenceDO = TCC_FENCE_DAO.queryCommonFenceDO(connection, xid, branchId);
             if (tccFenceDO == null){
-                throw new TCCFenceException(String.format("Insert tcc fence record error, rollback fence method failed. xid= %s, branchId= %s", xid, branchId),
+                throw new CommonFenceException(String.format("Insert tcc fence record error, rollback fence method failed. xid= %s, branchId= %s", xid, branchId),
                         FrameworkErrorCode.InsertRecordError);
             }
-            if (TCCFenceConstant.STATUS_COMMITTED == tccFenceDO.getStatus()) {
+            if (CommonFenceConstant.STATUS_COMMITTED == tccFenceDO.getStatus()) {
                 LOGGER.info("Branch transaction has already committed before. idempotency rejected. xid: {}, branchId: {}, status: {}", xid, branchId, tccFenceDO.getStatus());
                 return true;
             }
-            if (TCCFenceConstant.STATUS_ROLLBACKED == tccFenceDO.getStatus() || TCCFenceConstant.STATUS_SUSPENDED == tccFenceDO.getStatus()) {
+            if (CommonFenceConstant.STATUS_ROLLBACKED == tccFenceDO.getStatus() || CommonFenceConstant.STATUS_SUSPENDED == tccFenceDO.getStatus()) {
                 if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn("Branch transaction status is unexpected. xid: {}, branchId: {}, status: {}", xid, branchId, tccFenceDO.getStatus());
                 }
                 return false;
             }
             try {
-                return updateStatusAndInvokeTargetMethod(connection, commitMethod, targetTCCBean, xid, branchId, TCCFenceConstant.STATUS_COMMITTED, args);
+                return updateStatusAndInvokeTargetMethod(connection, commitMethod, targetTCCBean, xid, branchId, CommonFenceConstant.STATUS_COMMITTED, args);
             } catch (Exception ex) {
-                throw new TCCFenceException(ex.getCause());
+                throw new CommonFenceException(ex.getCause());
             }
         };
         DbPro dbPro = StrUtil.isBlank(dataSourceConfig.getName()) ? Db.use() : Db.use(dataSourceConfig.getName());
@@ -152,30 +151,30 @@ public class TCCFenceHandler {
         IAtom runnable = () -> {
             try {
                 Connection connection = dataSource.getConnection();
-                TCCFenceDO tccFenceDO = TCC_FENCE_DAO.queryTCCFenceDO(connection, xid, branchId);
+                CommonFenceDO tccFenceDO = TCC_FENCE_DAO.queryCommonFenceDO(connection, xid, branchId);
                 if (tccFenceDO == null){
-                    boolean result = insertTCCFenceLog(connection, xid, branchId, actionName, TCCFenceConstant.STATUS_SUSPENDED);
+                    boolean result = insertTCCFenceLog(connection, xid, branchId, actionName, CommonFenceConstant.STATUS_SUSPENDED);
                     LOGGER.info("Insert tcc fence record result: {}. xid: {}, branchId: {}", result, xid, branchId);
                     if (!result) {
-                        throw new TCCFenceException(String.format("Insert tcc fence record error, rollback fence method failed. xid= %s, branchId= %s", xid, branchId),
+                        throw new CommonFenceException(String.format("Insert tcc fence record error, rollback fence method failed. xid= %s, branchId= %s", xid, branchId),
                                 FrameworkErrorCode.InsertRecordError);
                     }
                     return true;
                 } else {
-                    if (TCCFenceConstant.STATUS_ROLLBACKED == tccFenceDO.getStatus() || TCCFenceConstant.STATUS_SUSPENDED == tccFenceDO.getStatus()) {
+                    if (CommonFenceConstant.STATUS_ROLLBACKED == tccFenceDO.getStatus() || CommonFenceConstant.STATUS_SUSPENDED == tccFenceDO.getStatus()) {
                         LOGGER.info("Branch transaction had already rollbacked before, idempotency rejected. xid: {}, branchId: {}, status: {}", xid, branchId, tccFenceDO.getStatus());
                         return true;
                     }
-                    if (TCCFenceConstant.STATUS_COMMITTED == tccFenceDO.getStatus()) {
+                    if (CommonFenceConstant.STATUS_COMMITTED == tccFenceDO.getStatus()) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Branch transaction status is unexpected. xid: {}, branchId: {}, status: {}", xid, branchId, tccFenceDO.getStatus());
                         }
                         return false;
                     }
                 }
-                return updateStatusAndInvokeTargetMethod(connection, rollbackMethod, targetTCCBean, xid, branchId, TCCFenceConstant.STATUS_ROLLBACKED,  args);
+                return updateStatusAndInvokeTargetMethod(connection, rollbackMethod, targetTCCBean, xid, branchId, CommonFenceConstant.STATUS_ROLLBACKED,  args);
             } catch (Throwable ex) {
-                throw new TCCFenceException(ex.getCause());
+                throw new CommonFenceException(ex.getCause());
             }
         };
         DbPro dbPro = StrUtil.isBlank(dataSourceConfig.getName()) ? Db.use() : Db.use(dataSourceConfig.getName());
@@ -192,12 +191,12 @@ public class TCCFenceHandler {
      * @return the boolean
      */
     private static boolean insertTCCFenceLog(Connection conn, String xid, Long branchId, String actionName, Integer status) {
-        TCCFenceDO tccFenceDO = new TCCFenceDO();
+        CommonFenceDO tccFenceDO = new CommonFenceDO();
         tccFenceDO.setXid(xid);
         tccFenceDO.setBranchId(branchId);
         tccFenceDO.setActionName(actionName);
         tccFenceDO.setStatus(status);
-        return TCC_FENCE_DAO.insertTCCFenceDO(conn, tccFenceDO);
+        return TCC_FENCE_DAO.insertCommonFenceDO(conn, tccFenceDO);
     }
 
     /**
@@ -212,7 +211,7 @@ public class TCCFenceHandler {
      */
     private static boolean updateStatusAndInvokeTargetMethod(Connection conn, Method method, Object targetTCCBean,
                                                              String xid, Long branchId, int status, Object[] args) throws Exception {
-        boolean result = TCC_FENCE_DAO.updateTCCFenceDO(conn, xid, branchId, status, TCCFenceConstant.STATUS_TRIED);
+        boolean result = TCC_FENCE_DAO.updateCommonFenceDO(conn, xid, branchId, status, CommonFenceConstant.STATUS_TRIED);
         if (result) {
             // invoke two phase method
             Object ret = method.invoke(targetTCCBean, args);
@@ -250,7 +249,7 @@ public class TCCFenceHandler {
         IAtom runnable = () -> {
             try {
                 Connection connection = dataSource.getConnection();
-                boolean ret = TCC_FENCE_DAO.deleteTCCFenceDO(connection, xid, branchId);
+                boolean ret = TCC_FENCE_DAO.deleteCommonFenceDO(connection, xid, branchId);
                 return ret;
             } catch (Throwable ex) {
                 return false;
@@ -274,7 +273,7 @@ public class TCCFenceHandler {
     /**
      * clean fence log that has the final status runnable.
      *
-     * @see TCCFenceConstant
+     * @see CommonFenceConstant
      */
     private static class FenceLogCleanRunnable implements Runnable {
         @Override

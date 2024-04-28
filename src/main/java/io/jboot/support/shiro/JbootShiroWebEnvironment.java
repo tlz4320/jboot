@@ -1,7 +1,6 @@
 package io.jboot.support.shiro;
 
 import io.jboot.Jboot;
-import org.apache.shiro.config.IniFactorySupport;
 import org.apache.shiro.web.env.IniWebEnvironment;
 
 public class JbootShiroWebEnvironment extends IniWebEnvironment {
@@ -12,7 +11,7 @@ public class JbootShiroWebEnvironment extends IniWebEnvironment {
         return new String[]{
                 iniFileName,
                 DEFAULT_WEB_INI_RESOURCE_PATH,
-                IniFactorySupport.DEFAULT_INI_RESOURCE_PATH
+                "classpath:shiro.ini"
         };
     }
 }

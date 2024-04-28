@@ -24,12 +24,9 @@ public class JdkUtil {
     }
 
 
-    public static boolean isJdk11To19() {
+    public static boolean isJdk11Later() {
         //17.0.1
         String javaVersion = System.getProperty("java.version");
-        return javaVersion != null && javaVersion.startsWith("1")
-                && javaVersion.indexOf(".") == 2;
+        return javaVersion != null && javaVersion.indexOf(".") == 2;
     }
-
-
 }

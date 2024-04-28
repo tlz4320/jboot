@@ -109,7 +109,8 @@ public class JbootApplicationConfig {
 
     private String initProxy() {
         ///cglib  javassist
-        return JdkUtil.isJdk11To19() ? "javassist" : "cglib";
+        //直接不要使用cglib了，谁还用jdk8啊
+        return  "javassist";
     }
 
     public void setProxy(String proxy) {

@@ -24,7 +24,7 @@ Jboot 是一个基于 JFinal、Dubbo、Seata、Sentinel、ShardingSphere、Nacos
 <dependency>
     <groupId>io.jboot</groupId>
     <artifactId>jboot</artifactId>
-    <version>4.1.5</version>
+    <version>4.1.7</version>
 </dependency>
 ```
 
@@ -50,23 +50,11 @@ public class Helloworld extends JbootController {
 - 文档请访问：[www.jboot.com.cn](http://www.jboot.com.cn)
 - Demos 请访问：[这里](./src/test/java/io/jboot/test)
 
-## 广告
+## 我的修改
 
-- 一个好用的在线代码格式化工具：[http://www.CodeFormat.CN](http://www.codeformat.cn)
-
-## 微信交流群
-
-![](./doc/docs/static/images/jboot-wechat-group.png)
-
-
-## JbootAdmin 
-
-JbootAdmin 是 Jboot 官方推出的、收费的、企业级快速开发框架，真诚的为各位开发者提供一站式、保姆式的开发服务。
-关于 JbootAdmin 的更多的功能请咨询海哥（微信：wx198819880），或请访问以下网址：
-
-[http://jboot.io/jbootadmin/feature.html](http://jboot.io/jbootadmin/feature.html)
-
-
-![](./doc/jbootadmin/images/jbootadmin-demo.jpg)
-
+- 修改JFinal版本到最新版本，过去的版本proxy存在问题
+- 删除部分用不到的类，特别是cglib早就应该淘汰了，对于没完成的Redis其他连接工具的类进行清理
+- 升级了Jedis到最新版本，提高安全性和并发速度
+- 升级大量依赖包括log4j到最新版，避免存在安全问题
+- 删除部分完全用不到的依赖，不知道引入的原因
 

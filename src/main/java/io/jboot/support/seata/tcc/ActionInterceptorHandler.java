@@ -23,13 +23,13 @@ import io.seata.common.exception.FrameworkException;
 import io.seata.common.util.NetUtil;
 import io.seata.common.util.ReflectionUtil;
 import io.seata.core.model.BranchType;
+import io.seata.integration.tx.api.interceptor.ActionContextUtil;
 import io.seata.rm.DefaultResourceManager;
 import io.seata.rm.tcc.TCCResource;
 import io.seata.rm.tcc.api.BusinessActionContext;
 import io.seata.rm.tcc.api.BusinessActionContextParameter;
 import io.seata.rm.tcc.api.BusinessActionContextUtil;
 import io.seata.rm.tcc.api.TwoPhaseBusinessAction;
-import io.seata.rm.tcc.interceptor.ActionContextUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -132,7 +132,7 @@ public class ActionInterceptorHandler {
 
         //init applicationData
         Map<String, Object> applicationContext = new HashMap<>(4);
-        applicationContext.put(Constants.TCC_ACTION_CONTEXT, context);
+        applicationContext.put(Constants.TX_ACTION_CONTEXT, context);
         String applicationContextStr = JSON.toJSONString(applicationContext);
         try {
             //registry branch record
@@ -177,7 +177,7 @@ public class ActionInterceptorHandler {
             context.put(Constants.COMMIT_METHOD, businessAction.commitMethod());
             context.put(Constants.ROLLBACK_METHOD, businessAction.rollbackMethod());
             context.put(Constants.ACTION_NAME, businessAction.name());
-            context.put(Constants.USE_TCC_FENCE, businessAction.useTCCFence());
+            context.put(Constants.USE_COMMON_FENCE, businessAction.useTCCFence());
         }
     }
 

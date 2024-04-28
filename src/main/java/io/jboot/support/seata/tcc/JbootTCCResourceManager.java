@@ -9,9 +9,9 @@ import io.seata.core.exception.TransactionException;
 import io.seata.core.model.BranchStatus;
 import io.seata.core.model.BranchType;
 import io.seata.core.model.Resource;
+import io.seata.integration.tx.api.remoting.TwoPhaseResult;
 import io.seata.rm.AbstractResourceManager;
 import io.seata.rm.tcc.TCCResource;
-import io.seata.rm.tcc.TwoPhaseResult;
 import io.seata.rm.tcc.api.BusinessActionContext;
 
 import java.lang.reflect.Method;
@@ -85,7 +85,7 @@ public class JbootTCCResourceManager extends AbstractResourceManager {
             Object ret;
             boolean result;
             // add idempotent and anti hanging
-            if (Boolean.TRUE.equals(businessActionContext.getActionContext(Constants.USE_TCC_FENCE))) {
+            if (Boolean.TRUE.equals(businessActionContext.getActionContext(Constants.USE_COMMON_FENCE))) {
                 try {
                     result = TCCFenceHandler.commitFence(commitMethod, targetTCCBean, xid, branchId, args);
                 } catch (SkipCallbackWrapperException | UndeclaredThrowableException e) {
@@ -144,7 +144,7 @@ public class JbootTCCResourceManager extends AbstractResourceManager {
             Object ret;
             boolean result;
             // add idempotent and anti hanging
-            if (Boolean.TRUE.equals(businessActionContext.getActionContext(Constants.USE_TCC_FENCE))) {
+            if (Boolean.TRUE.equals(businessActionContext.getActionContext(Constants.USE_COMMON_FENCE))) {
                 try {
                     result = TCCFenceHandler.rollbackFence(rollbackMethod, targetTCCBean, xid, branchId,
                             args, tccResource.getActionName());
@@ -186,7 +186,7 @@ public class JbootTCCResourceManager extends AbstractResourceManager {
         Map actionContextMap = null;
         if (StringUtils.isNotBlank(applicationData)) {
             Map tccContext = JSON.parseObject(applicationData, Map.class);
-            actionContextMap = (Map)tccContext.get(Constants.TCC_ACTION_CONTEXT);
+            actionContextMap = (Map)tccContext.get(Constants.TX_ACTION_CONTEXT);
         }
         if (actionContextMap == null) {
             actionContextMap = new HashMap<>(2);

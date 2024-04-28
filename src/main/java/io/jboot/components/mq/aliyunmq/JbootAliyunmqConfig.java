@@ -23,7 +23,7 @@ public class JbootAliyunmqConfig {
 
     private String accessKey;
     private String secretKey;
-    private String producerId;
+    private String groupID;
     private String addr;
     private String sendMsgTimeoutMillis = "3000";
 
@@ -50,12 +50,12 @@ public class JbootAliyunmqConfig {
         this.secretKey = secretKey;
     }
 
-    public String getProducerId() {
-        return producerId;
+    public String getGroupId() {
+        return groupID;
     }
 
-    public void setProducerId(String producerId) {
-        this.producerId = producerId;
+    public void setProducerId(String groupID) {
+        this.groupID = groupID;
     }
 
     public String getAddr() {

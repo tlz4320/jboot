@@ -19,6 +19,7 @@ import com.jfinal.kit.LogKit;
 import com.jfinal.log.Log;
 import io.jboot.exception.JbootException;
 import io.jboot.utils.StrUtil;
+import io.undertow.servlet.spec.HttpServletResponseImpl;
 
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
@@ -167,7 +168,7 @@ public class GatewayHttpProxy {
                 try {
                     closeable.close();
                 } catch (IOException e) {
-                    LogKit.logNothing(e);
+                    LogKit.debug(e.getMessage());
                 }
             }
         }
@@ -184,7 +185,7 @@ public class GatewayHttpProxy {
 
         //conn 是否已经指定了 contentType，如果指定了，就用 conn 的，否则就用自己配置的
         boolean isContentTypeSetted = false;
-
+        //这里有问题，因为存在相同的HeaderName 后面本来是一个list但是后面用getHeaderField只会取出最后一个
         Map<String, List<String>> headerFields = conn.getHeaderFields();
         if (headerFields != null && !headerFields.isEmpty()) {
             Set<String> headerNames = headerFields.keySet();
@@ -193,21 +194,28 @@ public class GatewayHttpProxy {
                 if (StrUtil.isBlank(headerName) || "Content-Encoding".equalsIgnoreCase(headerName)) {
                     continue;
                 }
-
-                String headerFieldValue = conn.getHeaderField(headerName);
-                if (StrUtil.isNotBlank(headerFieldValue)) {
-                    resp.setHeader(headerName, headerFieldValue);
-                    if ("Content-Type".equalsIgnoreCase(headerName)) {
-                        isContentTypeSetted = true;
+                List<String> headerFieldValues = headerFields.get(headerName);
+                if(headerFieldValues != null & headerFieldValues.size() != 0){
+                    for(String headerFieldValue : headerFieldValues){
+                        //不管是不是空 先设置起来
+//                        if (StrUtil.isNotBlank(headerFieldValue)) {
+                        resp.addHeader(headerName, headerFieldValue);
+                        if ("Content-Type".equalsIgnoreCase(headerName)) {
+                            isContentTypeSetted = true;
+                        }
+//                        }
                     }
+
                 }
+
             }
         }
 
         //conn 没有 Content-Type，需要设置为手动配置的内容
-        if (!isContentTypeSetted) {
-            resp.setContentType(contentType);
-        }
+        //这里也被我去了 应该直接按照原始的情况返回
+//        if (!isContentTypeSetted) {
+//            resp.setContentType(contentType);
+//        }
     }
 
     protected InputStream getInputStream(HttpURLConnection conn) throws IOException {
@@ -242,7 +250,6 @@ public class GatewayHttpProxy {
                 }
             }
         }
-
         if (this.headers != null) {
             for (Map.Entry<String, String> entry : this.headers.entrySet()) {
                 conn.setRequestProperty(entry.getKey(), entry.getValue());
