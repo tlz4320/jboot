@@ -59,3 +59,4 @@ public class Helloworld extends JbootController {
 - 删除部分完全用不到的依赖，不知道引入的原因
 - 修改Gateway，修复了Cookies丢失问题
 - 目前Proxy还是存在奇怪的问题
+test
