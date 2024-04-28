@@ -114,7 +114,12 @@ public class GatewayHttpProxy {
             /**
              * 复制链接的 inputStream 流到 Response
              */
-            copyConnStreamToResponse(conn, resp);
+            synchronized (conn){
+                synchronized (resp){
+                    copyConnStreamToResponse(conn, resp);
+                }
+            }
+
 
         } finally {
             if (conn != null) {
@@ -150,6 +155,9 @@ public class GatewayHttpProxy {
         OutputStream outStream = null;
         try {
             inStream = getInputStream(conn);
+            if(inStream == null){
+                return;
+            }
             outStream = resp.getOutputStream();
             byte[] buffer = new byte[1024];
             for (int len; (len = inStream.read(buffer)) != -1; ) {
