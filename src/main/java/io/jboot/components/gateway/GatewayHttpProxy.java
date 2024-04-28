@@ -93,7 +93,7 @@ public class GatewayHttpProxy {
              */
             configConnection(conn, req);
 
-
+            LOG.debug(req.getMethod());
             // get 请求
             if ("get".equalsIgnoreCase(req.getMethod())) {
                 conn.connect();
