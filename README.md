@@ -57,4 +57,5 @@ public class Helloworld extends JbootController {
 - 升级了Jedis到最新版本，提高安全性和并发速度
 - 升级大量依赖包括log4j到最新版，避免存在安全问题
 - 删除部分完全用不到的依赖，不知道引入的原因
+- 修改Gateway，修复了Cookies丢失问题
 
